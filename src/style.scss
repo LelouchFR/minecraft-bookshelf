@@ -1,0 +1,26 @@
+@import './styles/vars.scss';
+
+body {
+    background-color: nth($ColorTheme, 5);
+    font-family: $Mc-Font;
+
+    h1.title {
+        text-align: center;
+    }
+    
+    section.BookSection {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        text-align: center;
+    
+        div {
+            background-color: nth($ColorTheme, 4);
+            padding: 10px;
+
+            &:hover, h2:hover {
+                outline: 2px solid nth($ColorTheme, 2);
+            }
+        }
+    }
+}
