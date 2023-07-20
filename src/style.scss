@@ -1,25 +1,108 @@
 @import './styles/vars.scss';
 
+html, body {
+    cursor: nth($cursors, 1);
+}
+
 body {
     background-color: nth($ColorTheme, 5);
     font-family: $Mc-Font;
 
-    h1.title {
-        text-align: center;
-    }
+    h1.title {text-align: center}
     
     section.BookSection {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        @include HideShow("grid");
+        @include grid-columns(3, 1fr);
         gap: 10px;
         text-align: center;
+
+        @media screen and (max-width: 750px) {@include grid-columns(2, 1fr)}
+        @media screen and (max-width: 550px) {@include grid-columns(1, 1fr)}
     
         div {
             background-color: nth($ColorTheme, 4);
             padding: 10px;
 
-            &:hover, h2:hover {
-                outline: 2px solid nth($ColorTheme, 2);
+            &:hover, h2:hover, button.addBook:hover {outline: 2px solid nth($ColorTheme, 2)}
+            h2:hover {cursor: nth($cursors, 2)}
+
+            button.addBook {
+                background-color: nth($ColorTheme, 4);
+                font-family: $Mc-Font;
+                color: $blk;
+                margin-top: 20px;
+                font-size: 1.5em;
+                border: none;
+                cursor: nth($cursors, 4);
+            }
+        }
+    }
+
+    a {
+        color: $blk;
+        text-decoration: none;
+        cursor: nth($cursors, 5);
+    }
+
+    section.Page {
+        @include HideShow("block");
+
+        section.content {
+            position: relative;
+            font-family: $Mc-Font;
+            width: 100%;
+
+            img#BookPage {
+                position: relative;
+                z-index: 0;
+                width: 45%;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            textarea {
+                position: absolute;
+                top: 18vh;
+                background-color: $bookBG;
+                border: none;
+                font-size: 1.5em;
+                left: 50%;
+                transform: translate(-50%, -5px);
+                line-height: 1.9em;
+                width: 435px;
+                height: 485px;
+                resize: none;
+                overflow: hidden;
+                font-family: $Mc-Font;
+                cursor: nth($cursors, 2);
+
+                &:active, &:focus {outline: none}
+            }
+
+            p {
+                position: absolute;
+                top: 6vh;
+                left: 62.5%;
+                transform: translateX(-50%);
+            }
+
+            h1 {
+                position: absolute;
+                top: 8vh;
+                left: 37%;
+                transform: translateX(-50%);
+            }
+        }
+        
+        div {
+            display: grid;
+            @include grid-columns(2, 1fr);
+            
+            button {
+                position: relative;
+                left: 50%;
+                transform: translateX(-50%);
+                @include MC-Btn(30pt);
             }
         }
     }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
 import Book from "./components/Book";
+import Page from "./components/Page";
 
 function Books(props: MC.BooksProps): JSX.Element {
   return (
@@ -12,36 +13,69 @@ function Books(props: MC.BooksProps): JSX.Element {
 function NewBook({ CreateBook }: { CreateBook: () => void }): JSX.Element {
   return (
     <div>
-      <FontAwesomeIcon icon={faSquarePlus} /><br />
-      <button onClick={CreateBook}>Add Book</button>
+      <FontAwesomeIcon icon={faSquarePlus} fontSize={32}/><br />
+      <button onClick={CreateBook} className="addBook">Add Book</button>
     </div>
   )
 }
 
 export default function App(): JSX.Element {
-  const [books, setBooks] = useState<MC.BookProps[]>(() => {
+  const [books, setBooks]: State.Book = useState<MC.BookProps[]>((): MC.BookProps[] => {
     const storedBooks: string = localStorage.getItem("Books")!;
-    return storedBooks ? JSON.parse(storedBooks) : [{title: "First Book", enchanted: true}];
+    return storedBooks ? JSON.parse(storedBooks) : [{title: "Welcome Book", text: localStorage.getItem("PageText") || "Hello and welcome to minecraft-bookshelf here is Baptiste Zahnow writing you a note. This website is secure, every note you write is stored in your localStorage, so you can write anything you want without being scared of getting stolen.\nMore info at github.com/LelouchFR/minecraft-bookshelf", enchanted: true}];
   });
+  const [shouldShowPage, setShouldShowPage]: State.ShouldShowPage = useState<boolean>(false);
+  const [clickedBookIndex, setClickedBookIndex]: State.ClickedBookIndex = useState<number | null>(null);
 
-  useEffect(() => {
+  const pageComponent: JSX.Element | null = shouldShowPage && clickedBookIndex !== null ? <Page title={books[clickedBookIndex]?.title || books[0]!.title} text={books[clickedBookIndex]?.text || books[0]!.text} /> : null;
+
+  function CreateBook(): void {
+    const [NewBookTitle, NewBookEnchanted]: string[] = [prompt("New Book Title:")!, prompt("Enchanted ? [Y/N]")!];
+    let isEnchanted: boolean = NewBookEnchanted?.toUpperCase() === "Y";
+    return setBooks((prevBooks: MC.BookProps[]) => [...prevBooks, { title: NewBookTitle ? NewBookTitle : "Untitled", text: "Write Something...", enchanted: isEnchanted }]);
+  }
+
+  function handleBookClick(index: number): void {
+    setClickedBookIndex(index);
+    togglePageVisibility();
+  }
+
+  function togglePageVisibility(): void {
+    setShouldShowPage((prevState: boolean) => !prevState);
+  }
+
+  useEffect((): void => {
     localStorage.setItem("Books", JSON.stringify(books));
   }, [books]);
 
-  function CreateBook(): void {
-    return setBooks((prevBooks: MC.BookProps[]) => [...prevBooks, { title: "New Book" }]);
-  }
+  useEffect((): void => {
+    const bookSection: HTMLElement = document.querySelector('section.BookSection')!;
+    const pageSection: HTMLElement = document.querySelector('section.Page')!;
+
+    if (shouldShowPage) {
+      bookSection.classList.remove("show");
+      pageSection?.classList.remove("hide");
+      bookSection.classList.add("hide");
+      pageSection?.classList.add("show");
+    } else {
+      bookSection.classList.remove("hide");
+      pageSection?.classList.remove("show");
+      bookSection.classList.add("show");
+      pageSection?.classList.add("hide");
+    }
+  }, [shouldShowPage]);
 
   return (
     <>
       <h1 className="title">Minecraft Bookshelf</h1>
       <Books>
-        {books.map((book: MC.BookProps, index: number) => (
-          <Book key={index} title={book.title} enchanted={book.enchanted} />
+        {books.map<JSX.Element>((book: MC.BookProps, index: number): JSX.Element => (
+          <Book key={index} title={book.title} text={book.text} enchanted={book.enchanted} onClick={() => handleBookClick(index)} />
         ))}
         <NewBook CreateBook={CreateBook}/>
       </Books>
-      <small>v0.1</small>
+      {pageComponent}
+      <small><a href="https://github.com/LelouchFR">&copy; Baptiste Zahnow</a> v1.1</small>
     </>
   )
 }

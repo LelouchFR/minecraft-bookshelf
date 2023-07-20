@@ -1,4 +1,16 @@
 $ColorTheme: #477A1E, #70B237, #8FCA5C, #61371F, #854F2B, #C28340;
+$cursorsImg: "./assets/cursors/cursor.png", "./assets/cursors/text.png", "./assets/cursors/pointer.png", "./assets/cursors/selection.png", "./assets/cursors/grab.png";
+
+$cursors: (
+    (url(nth($cursorsImg, 1)) 0 0, default),
+    (url(nth($cursorsImg, 2)) 16 16, text),
+    (url(nth($cursorsImg, 3)) 16 16, crosshair),
+    (url(nth($cursorsImg, 4)) -16 0, pointer),
+    (url(nth($cursorsImg, 5)) -16 0, grab)
+);
+
+$blk: #000;
+$bookBG: rgb(253,247,232);
 
 @font-face {
     font-family: "Minecraft";
@@ -6,3 +18,41 @@ $ColorTheme: #477A1E, #70B237, #8FCA5C, #61371F, #854F2B, #C28340;
 }
 
 $Mc-Font: "Minecraft", sans-serif;
+
+@mixin grid-columns($num, $size) {
+    grid-template-columns: repeat($num, $size);
+}
+
+@mixin MC-Btn($btn-size) {
+    font-family: $Mc-Font;
+    height: $btn-size;
+    width: calc($btn-size * 10);
+    overflow: hidden;
+    white-space: nowrap;
+    user-select: none;
+
+    background: #999 url('https://i.ibb.co/rb2TWXL/bgbtn.png') center / cover;
+    image-rendering: pixelated;
+    border: 2px solid #000;
+    box-shadow: inset -2px -4px #0004, inset 2px 2px #FFF5;
+
+    &:hover {
+        background: rgba(100, 100, 255, .45);
+        text-shadow: 2px 2px #202013CC;
+        color: #FFFFA0;
+    }
+}
+
+@mixin HideShow($display) {
+    &.hide {
+        display: none;
+    }
+
+    &.show {
+        @if $display == "block" {
+            display: block;
+        } @else {
+            display: grid;
+        }
+    }
+}
