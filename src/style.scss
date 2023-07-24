@@ -19,9 +19,31 @@ body {
         @media screen and (max-width: 750px) {@include grid-columns(2, 1fr)}
         @media screen and (max-width: 550px) {@include grid-columns(1, 1fr)}
     
-        div {
+        > div {
             background-color: nth($ColorTheme, 4);
             padding: 10px;
+
+            div.trash {
+                display: none;
+                position: relative;
+
+                svg {
+                    position: absolute;
+                    left: 98%;
+                    transform: translate(-50%);
+
+                    &:hover {
+                        color: nth($ColorTheme, 2);
+                        cursor: nth($cursors, 4);
+                    }
+                }
+            }
+
+            &:hover {
+                div.trash {
+                    display: block;
+                }
+            }
 
             &:hover, h2:hover, button.addBook:hover {outline: 2px solid nth($ColorTheme, 2)}
             h2:hover {cursor: nth($cursors, 2)}
@@ -103,6 +125,7 @@ body {
                 left: 50%;
                 transform: translateX(-50%);
                 @include MC-Btn(30pt);
+                cursor: nth($cursors, 4);
             }
         }
     }
